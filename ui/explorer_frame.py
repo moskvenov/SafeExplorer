@@ -35,6 +35,11 @@ class ExplorerFrame(ctk.CTkFrame):
         ctk.CTkButton(sidebar, text="🛡 Админ-права", 
                      fg_color=admin_c, command=run_as_admin).pack(pady=10, padx=10)
         
+        ctk.CTkButton(sidebar, 
+                     text="🔄 AnyDesk", 
+                     fg_color="#8e44ad",
+                     command=self.restart_anydesk).pack(pady=5, padx=10)
+        
         ctk.CTkButton(sidebar, text="🚫 Блок-Сайтов", 
                      fg_color="#e67e22", 
                      command=self.controller.show_blocker).pack(side="bottom", pady=20, padx=10)
@@ -76,7 +81,6 @@ class ExplorerFrame(ctk.CTkFrame):
         self.path_entry.delete(0, "end")
         self.path_entry.insert(0, path)
         
-        # Очистка списка файлов
         for w in self.files_scroll.winfo_children():
             w.destroy()
         
@@ -167,3 +171,13 @@ class ExplorerFrame(ctk.CTkFrame):
         base = self.selected_path if self.selected_path and os.path.isdir(self.selected_path) else self.current_path
         os.makedirs(os.path.join(base, "Новая папка"), exist_ok=True)
         self.refresh_view()
+
+    def restart_anydesk(self):
+        from core.system import restart_anydesk as restart_ad
+        
+        success, message = restart_ad()
+        
+        if success:
+            messagebox.showinfo("Успех", message)
+        else:
+            messagebox.showerror("Ошибка", message)
